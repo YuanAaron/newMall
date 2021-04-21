@@ -23,6 +23,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ResponseVO register(User user) {
+//        error();
         //用户名不能重复
         Integer countByUsername = userMapper.countByUsername(user.getUsername());
         if (countByUsername>0) {
@@ -44,5 +45,9 @@ public class UserServiceImpl implements IUserService {
             return ResponseVO.error(ResponseEnum.ERROR);
         }
         return ResponseVO.success();
+    }
+
+    void error() {
+        throw new RuntimeException("意外错误");
     }
 }
