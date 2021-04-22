@@ -49,6 +49,12 @@ public class UserController {
         return userService.register(user);
     }
 
+    /**
+     * 登录状态失效：
+     * 1、客户端改变/删除了sessionId
+     * 2、服务端重启
+     * 3、session过期(时间配置在application.yml中，注意：这里至少为1min，原因参考：TomcatServletWebServerFactory中的getSessionTimeoutInMinutes方法)
+     */
     @PostMapping("/user/login")
     public ResponseVO<User> login(@Valid @RequestBody UserLoginForm userLoginForm,
                             BindingResult bindingResult,

@@ -1,5 +1,9 @@
 server:
   port: 8088
+  servlet:
+    session:
+      #默认30分钟
+      timeout: 30m
 
 spring:
   datasource:
@@ -21,3 +25,4 @@ mybatis:
 logging:
   pattern:
     console: "[%thread] %-5level %logger{36} - %msg%n"
+
