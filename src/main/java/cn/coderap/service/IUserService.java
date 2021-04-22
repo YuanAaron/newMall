@@ -13,4 +13,5 @@ public interface IUserService {
     /**
      * 登录
      */
+    ResponseVO<User> login(String username,String password);
 }

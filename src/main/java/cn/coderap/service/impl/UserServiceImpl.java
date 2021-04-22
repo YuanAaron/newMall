@@ -50,4 +50,20 @@ public class UserServiceImpl implements IUserService {
     void error() {
         throw new RuntimeException("意外错误");
     }
+
+    @Override
+    public ResponseVO<User> login(String username, String password) {
+        User user = userMapper.selectByUsername(username);
+        //用户名不存在
+        if (user==null) {
+            //返回用户名或密码错误（安全）
+            return ResponseVO.error(ResponseEnum.USERNAME_OR_PASSWORD_ERROR);
+        }
+        if (!user.getPassword().equalsIgnoreCase(DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8)))) {
+            //返回用户名或密码错误（安全）
+            return ResponseVO.error(ResponseEnum.USERNAME_OR_PASSWORD_ERROR);
+        }
+        user.setPassword("");
+        return ResponseVO.success(user);
+    }
 }
