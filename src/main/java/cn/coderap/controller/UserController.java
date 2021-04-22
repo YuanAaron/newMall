@@ -68,7 +68,7 @@ public class UserController {
         //一旦获取了已登录用户的sessionId，在任何地方都可以登录，不安全
         //改进版：token+redis（老师说这里的token就是用的sessionId，我的想法是sessionId不安全，考虑使用sessionId加盐，也许这就是token比sessionId好的地方吧）
         session.setAttribute(NewMallConsts.CURRENT_USER, responseVO.getData());
-        log.info("/login sessionId={}", session.getId());
+        log.info("/user/login sessionId={}", session.getId());
         return responseVO;
     }
 
@@ -85,24 +85,20 @@ public class UserController {
     public ResponseVO<User> userInfo(HttpSession session) {
         log.info("/user sessionId={}", session.getId());
         User user = (User)session.getAttribute(NewMallConsts.CURRENT_USER);
-        if (user == null) {
-            return ResponseVO.error(ResponseEnum.NEED_LOGIN);
-        }
         return ResponseVO.success(user);
     }
 
     /**
-     * TODO /user/logout、/user以及将来查订单和查看购物车等，都会判断用户是否登录，可以通过拦截器来判断登录状态
+     * /user/logout、/user以及将来查订单和查看购物车等，都会判断用户是否登录，可以通过拦截器来判断登录状态
+     * 实现该目的有两种方式：
+     * 1、Interceptor，对http请求（url）进行拦截，我们用的session就是从http request中获取的，拦截器与我们的需求更加贴合
+     * 2、AOP，基于包名，更加强大
      * @param session
      * @return
      */
     @PostMapping("/user/logout")
     public ResponseVO<User> logout(HttpSession session) {
         log.info("/user/logout sessionId={}", session.getId());
-        User user = (User)session.getAttribute(NewMallConsts.CURRENT_USER);
-        if (user == null) {
-            return ResponseVO.error(ResponseEnum.NEED_LOGIN);
-        }
         session.removeAttribute(NewMallConsts.CURRENT_USER);
         return ResponseVO.successByMsg("退出成功");
     }
