@@ -3,14 +3,12 @@ package cn.coderap.controller;
 import cn.coderap.consts.NewMallConsts;
 import cn.coderap.pojo.bo.UserLoginForm;
 import cn.coderap.pojo.bo.UserRegisterForm;
-import cn.coderap.enums.ResponseEnum;
 import cn.coderap.enums.RoleEnum;
 import cn.coderap.pojo.User;
 import cn.coderap.service.IUserService;
 import cn.coderap.pojo.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,15 +32,7 @@ public class UserController {
      * 前端：raw+JSON；后端：@RequestBody User user
      */
     @PostMapping("/user/register")
-    public ResponseVO register(@Valid @RequestBody UserRegisterForm userRegisterForm,
-                               BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.info("注册提交的参数有误,{},{}",
-                    Objects.requireNonNull(bindingResult.getFieldError()).getField(),
-                    bindingResult.getFieldError().getDefaultMessage());
-            return ResponseVO.error(ResponseEnum.PARAM_ERROR,bindingResult);
-        }
-
+    public ResponseVO register(@Valid @RequestBody UserRegisterForm userRegisterForm) {
         User user = new User();
         BeanUtils.copyProperties(userRegisterForm, user);
         user.setRole(RoleEnum.CUSTOMER.getCode());
@@ -57,12 +47,7 @@ public class UserController {
      */
     @PostMapping("/user/login")
     public ResponseVO<User> login(@Valid @RequestBody UserLoginForm userLoginForm,
-                            BindingResult bindingResult,
                             HttpSession session) {
-        if (bindingResult.hasErrors()) {
-            return ResponseVO.error(ResponseEnum.PARAM_ERROR,bindingResult);
-        }
-
         ResponseVO<User> responseVO = userService.login(userLoginForm.getUsername(), userLoginForm.getPassword());
         //设置session: session保存在内存里，重启项目会丢失。
         //一旦获取了已登录用户的sessionId，在任何地方都可以登录，不安全
