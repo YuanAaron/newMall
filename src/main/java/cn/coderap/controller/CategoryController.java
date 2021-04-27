@@ -1,8 +1,8 @@
 package cn.coderap.controller;
 
 import cn.coderap.service.ICategoryService;
-import cn.coderap.vo.CategoryVO;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.CategoryVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

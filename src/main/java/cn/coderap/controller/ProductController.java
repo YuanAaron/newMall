@@ -1,7 +1,7 @@
 package cn.coderap.controller;
 
 import cn.coderap.service.IProductService;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

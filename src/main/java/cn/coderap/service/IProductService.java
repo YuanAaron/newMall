@@ -1,6 +1,6 @@
 package cn.coderap.service;
 
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import com.github.pagehelper.PageInfo;
 
 public interface IProductService {

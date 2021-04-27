@@ -3,8 +3,8 @@ package cn.coderap.service.impl;
 import cn.coderap.NewMallApplicationTest;
 import cn.coderap.enums.ResponseEnum;
 import cn.coderap.service.ICategoryService;
-import cn.coderap.vo.CategoryVO;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.CategoryVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Assert;

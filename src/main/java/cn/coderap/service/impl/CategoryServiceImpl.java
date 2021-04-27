@@ -4,8 +4,8 @@ import cn.coderap.consts.NewMallConsts;
 import cn.coderap.mapper.CategoryMapper;
 import cn.coderap.pojo.Category;
 import cn.coderap.service.ICategoryService;
-import cn.coderap.vo.CategoryVO;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.CategoryVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by yw

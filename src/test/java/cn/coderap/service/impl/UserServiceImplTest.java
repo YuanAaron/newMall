@@ -5,7 +5,7 @@ import cn.coderap.enums.ResponseEnum;
 import cn.coderap.enums.RoleEnum;
 import cn.coderap.pojo.User;
 import cn.coderap.service.IUserService;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

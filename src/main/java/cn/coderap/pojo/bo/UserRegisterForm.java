@@ -1,4 +1,4 @@
-package cn.coderap.dto;
+package cn.coderap.pojo.bo;
 
 import lombok.Data;
 

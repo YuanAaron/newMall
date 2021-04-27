@@ -3,7 +3,7 @@ package cn.coderap.service.impl;
 import cn.coderap.NewMallApplicationTest;
 import cn.coderap.enums.ResponseEnum;
 import cn.coderap.service.IProductService;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import com.github.pagehelper.PageInfo;
 import org.junit.Assert;
 import org.junit.Test;

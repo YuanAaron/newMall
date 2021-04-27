@@ -4,7 +4,7 @@ import cn.coderap.enums.ResponseEnum;
 import cn.coderap.mapper.UserMapper;
 import cn.coderap.pojo.User;
 import cn.coderap.service.IUserService;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 

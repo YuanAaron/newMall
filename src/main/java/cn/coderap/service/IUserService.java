@@ -1,7 +1,7 @@
 package cn.coderap.service;
 
 import cn.coderap.pojo.User;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 
 public interface IUserService {
 

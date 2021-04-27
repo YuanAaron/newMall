@@ -1,6 +1,6 @@
 package cn.coderap.service;
-import cn.coderap.vo.CategoryVO;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.CategoryVO;
+import cn.coderap.pojo.vo.ResponseVO;
 
 import java.util.List;
 import java.util.Set;

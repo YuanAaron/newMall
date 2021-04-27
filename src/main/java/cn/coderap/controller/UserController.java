@@ -1,13 +1,13 @@
 package cn.coderap.controller;
 
 import cn.coderap.consts.NewMallConsts;
-import cn.coderap.dto.UserLoginForm;
-import cn.coderap.dto.UserRegisterForm;
+import cn.coderap.pojo.bo.UserLoginForm;
+import cn.coderap.pojo.bo.UserRegisterForm;
 import cn.coderap.enums.ResponseEnum;
 import cn.coderap.enums.RoleEnum;
 import cn.coderap.pojo.User;
 import cn.coderap.service.IUserService;
-import cn.coderap.vo.ResponseVO;
+import cn.coderap.pojo.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.BindingResult;
