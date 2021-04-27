@@ -2,6 +2,7 @@ package cn.coderap.service.impl;
 
 import cn.coderap.mapper.ProductMapper;
 import cn.coderap.pojo.Product;
+import cn.coderap.pojo.vo.ProductDetailVO;
 import cn.coderap.service.ICategoryService;
 import cn.coderap.service.IProductService;
 import cn.coderap.pojo.vo.ProductVO;
@@ -17,6 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static cn.coderap.enums.ProductStatusEnum.DELETE;
+import static cn.coderap.enums.ProductStatusEnum.OFF_SALE;
+import static cn.coderap.enums.ResponseEnum.PRODUCT_OFF_SALE_OR_DELETE;
 
 /**
  * Created by yw
@@ -53,5 +58,18 @@ public class ProductServiceImpl implements IProductService {
         PageInfo pageInfo = new PageInfo(productList);
         pageInfo.setList(productVOList);
         return ResponseVO.success(pageInfo);
+    }
+
+    @Override
+    public ResponseVO<ProductDetailVO> detail(Integer productId) {
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product.getStatus().equals(OFF_SALE.getCode()) || product.getStatus().equals(DELETE.getCode())) {
+            return ResponseVO.error(PRODUCT_OFF_SALE_OR_DELETE);
+        }
+        ProductDetailVO productDetailVO = new ProductDetailVO();
+        BeanUtils.copyProperties(product, productDetailVO);
+        //库存数据比较敏感：隐藏库存真实值（感觉没必要）
+        productDetailVO.setStock(productDetailVO.getStock()>100 ? 100 : productDetailVO.getStock());
+        return ResponseVO.success(productDetailVO);
     }
 }

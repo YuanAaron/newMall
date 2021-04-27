@@ -2,6 +2,7 @@ package cn.coderap.service.impl;
 
 import cn.coderap.NewMallApplicationTest;
 import cn.coderap.enums.ResponseEnum;
+import cn.coderap.pojo.vo.ProductDetailVO;
 import cn.coderap.service.IProductService;
 import cn.coderap.pojo.vo.ResponseVO;
 import com.github.pagehelper.PageInfo;
@@ -20,6 +21,12 @@ public class ProductServiceImplTest extends NewMallApplicationTest {
         //100002 100012 null
         ResponseVO<PageInfo> list = productService.list(null, 1, 10);
         Assert.assertEquals(ResponseEnum.SUCESS.getCode(), list.getCode());
+    }
+
+    @Test
+    public void detail() {
+        ResponseVO<ProductDetailVO> responseVO = productService.detail(26);
+        Assert.assertEquals(ResponseEnum.SUCESS.getCode(), responseVO.getCode());
     }
 
 }
