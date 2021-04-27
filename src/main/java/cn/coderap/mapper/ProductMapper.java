@@ -1,6 +1,10 @@
 package cn.coderap.mapper;
 
 import cn.coderap.pojo.Product;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Set;
 
 public interface ProductMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +20,6 @@ public interface ProductMapper {
     int updateByPrimaryKeyWithBLOBs(Product record);
 
     int updateByPrimaryKey(Product record);
+
+    List<Product> selectByCategoryIdSet(@Param("categoryIdSet") Set<Integer> categoryIdSet); //这里的@Param不能少
 }

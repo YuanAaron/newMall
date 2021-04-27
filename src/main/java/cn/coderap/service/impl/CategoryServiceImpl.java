@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,9 +45,6 @@ public class CategoryServiceImpl implements ICategoryService {
 //                .map(this::category2categoryVO).sorted(Comparator.comparing(CategoryVO::getSortOrder).reversed())
 //                .collect(Collectors.toList());
 
-        //一次查询的写法（推荐）
-        findSubCategories(categoryVOList,categories);
-
         return ResponseVO.success(categoryVOList);
     }
 
@@ -58,6 +56,10 @@ public class CategoryServiceImpl implements ICategoryService {
                     CategoryVO subCategoryVO = category2categoryVO(category);
                     subCategoryVOList.add(subCategoryVO);
                 }
+                //老师都放在了这里
+//                subCategoryVOList.sort(Comparator.comparing(CategoryVO::getSortOrder).reversed()); //默认从小到大，取反即可
+//                categoryVO.setSubCategories(subCategoryVOList);//容易忘记
+//                findSubCategories(subCategoryVOList, categories);
             }
             subCategoryVOList.sort(Comparator.comparing(CategoryVO::getSortOrder).reversed()); //默认从小到大，取反即可
             categoryVO.setSubCategories(subCategoryVOList);//容易忘记
@@ -69,5 +71,21 @@ public class CategoryServiceImpl implements ICategoryService {
         CategoryVO categoryVO = new CategoryVO();
         BeanUtils.copyProperties(category, categoryVO);
         return categoryVO;
+    }
+
+    @Override
+    public void findSubCategoryId(Integer id, Set<Integer> res) {
+        List<Category> categories = categoryMapper.selectAll();
+        //避免递归时多次查询数据库
+        findSubCategoryId(id, res, categories);
+    }
+
+    public void findSubCategoryId(Integer id, Set<Integer> res,List<Category> categories) {
+        for (Category category : categories) {
+            if (category.getParentId().equals(id)) {
+                res.add(category.getId());
+                findSubCategoryId(category.getId(), res,categories);
+            }
+        }
     }
 }
