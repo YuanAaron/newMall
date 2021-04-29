@@ -11,6 +11,10 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/new_mall?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     password: Kexin!00
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: kexin_redis
 
 # 在数据库字段映射成pojo方面，BaseResultMap比map-underscore-to-camel-case的功能更强大
 mybatis:
