@@ -208,4 +208,19 @@
       </foreach>
     </if>
   </select>
+
+  <select id="selectByCartList" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mall_product
+    where 1=1
+    <if test="cartList.size() > 0">
+      and id in
+      <foreach collection="cartList" item="item" index="index" open="(" separator="," close=")">
+        #{item.productId}
+      </foreach>
+    </if>
+  </select>
 </mapper>

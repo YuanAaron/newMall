@@ -1,6 +1,7 @@
 package cn.coderap.mapper;
 
 import cn.coderap.pojo.Product;
+import cn.coderap.pojo.vo.CartRedisVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface ProductMapper {
     int updateByPrimaryKey(Product record);
 
     List<Product> selectByCategoryIdSet(@Param("categoryIdSet") Set<Integer> categoryIdSet); //这里的@Param不能少
+
+    List<Product> selectByCartList(@Param("cartList") List<CartRedisVO> cartList);
 }

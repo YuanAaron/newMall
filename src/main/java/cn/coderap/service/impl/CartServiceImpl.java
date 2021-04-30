@@ -83,22 +83,18 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public ResponseVO<CartVO> list(Integer uid) {
-        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
-        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
-        Map<String, String> map = opsForHash.entries(key);
+        List<CartRedisVO> cartList = listForCartRedisVO(uid);
+        List<Product> productList = productMapper.selectByCartList(cartList);
 
         CartVO cartVO = new CartVO();
         List<CartProductVO> cartProductVoList = new ArrayList<>();
         Boolean selectAll = true;
         Integer cartTotalQuantity = 0;
         BigDecimal cartTotalPrice = BigDecimal.ZERO;
-        for (Map.Entry<String,String> entry : map.entrySet()) {
-            Integer productId = Integer.valueOf(entry.getKey());
-            CartRedisVO cart = gson.fromJson(entry.getValue(), CartRedisVO.class);
-
-            Product product = productMapper.selectByPrimaryKey(productId); //不要在循环中查sql TODO 需要优化，使用mysql中的in
+        for (CartRedisVO cart : cartList) {
+            Product product = productList.stream().filter(e->e.getId().equals(cart.getProductId())).findAny().orElse(null);
             if (product != null) {
-                CartProductVO cartProductVO = new CartProductVO(productId, cart.getQuantity(), product.getName(),
+                CartProductVO cartProductVO = new CartProductVO(cart.getProductId(), cart.getQuantity(), product.getName(),
                         product.getSubtitle(), product.getMainImage(),
                         product.getPrice(), product.getStatus(),
                         product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())),
