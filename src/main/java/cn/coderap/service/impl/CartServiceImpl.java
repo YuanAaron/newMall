@@ -5,6 +5,7 @@ import cn.coderap.enums.ResponseEnum;
 import cn.coderap.mapper.ProductMapper;
 import cn.coderap.pojo.Product;
 import cn.coderap.pojo.bo.CartAddForm;
+import cn.coderap.pojo.bo.CartUpdateForm;
 import cn.coderap.pojo.vo.CartProductVO;
 import cn.coderap.pojo.vo.CartRedisVO;
 import cn.coderap.pojo.vo.CartVO;
@@ -122,5 +123,84 @@ public class CartServiceImpl implements ICartService {
         //总价只计算选中的
         cartVO.setCartTotalPrice(cartTotalPrice);
         return ResponseVO.success(cartVO);
+    }
+
+    @Override
+    public ResponseVO<CartVO> update(Integer uid, Integer productId, CartUpdateForm form) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
+        String value = opsForHash.get(key, String.valueOf(productId));
+        if (StringUtils.isEmpty(value)) {
+            //没有该商品
+            ResponseVO.error(ResponseEnum.CART_PRODUCT_NOT_EXIST);
+        }
+        //已经有该商品，更新
+        CartRedisVO cart = gson.fromJson(value, CartRedisVO.class);
+        if (form.getQuantity() != null && form.getQuantity() >= 0 ) {
+            cart.setQuantity(form.getQuantity());
+        }
+        if (form.getSelected() != null) {
+            cart.setSelected(form.getSelected());
+        }
+        opsForHash.put(key, String.valueOf(productId), gson.toJson(cart));
+        return list(uid);
+    }
+
+    @Override
+    public ResponseVO<CartVO> delete(Integer uid, Integer productId) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
+        String value = opsForHash.get(key, String.valueOf(productId));
+        if (StringUtils.isEmpty(value)) {
+            //没有该商品
+            ResponseVO.error(ResponseEnum.CART_PRODUCT_NOT_EXIST);
+        }
+        opsForHash.delete(key, String.valueOf(productId));
+        return list(uid);
+    }
+
+    @Override
+    public ResponseVO<CartVO> selectAll(Integer uid) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
+
+        List<CartRedisVO> cartRedisVoList = listForCartRedisVO(uid);
+        for (CartRedisVO cart : cartRedisVoList) {
+            cart.setSelected(true);
+            opsForHash.put(key, String.valueOf(cart.getProductId()), gson.toJson(cart));
+        }
+        return list(uid);
+    }
+
+    @Override
+    public ResponseVO<CartVO> unSelectAll(Integer uid) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
+
+        List<CartRedisVO> cartRedisVoList = listForCartRedisVO(uid);
+        for (CartRedisVO cart : cartRedisVoList) {
+            cart.setSelected(false);
+            opsForHash.put(key, String.valueOf(cart.getProductId()), gson.toJson(cart));
+        }
+        return list(uid);
+    }
+
+    @Override
+    public ResponseVO<Integer> sum(Integer uid) {
+        Integer sum = listForCartRedisVO(uid).stream().map(CartRedisVO::getQuantity).reduce(0, Integer::sum);
+        return ResponseVO.success(sum);
+    }
+
+    private List<CartRedisVO> listForCartRedisVO(Integer uid) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
+        Map<String, String> map = opsForHash.entries(key);
+
+        List<CartRedisVO> list = new ArrayList<>();
+        for (Map.Entry<String,String> entry : map.entrySet()) {
+            CartRedisVO cart = gson.fromJson(entry.getValue(), CartRedisVO.class);
+            list.add(cart);
+        }
+        return list;
     }
 }
