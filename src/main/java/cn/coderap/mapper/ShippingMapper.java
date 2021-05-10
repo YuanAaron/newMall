@@ -2,6 +2,9 @@ package cn.coderap.mapper;
 
 import cn.coderap.pojo.Shipping;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ShippingMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +17,10 @@ public interface ShippingMapper {
     int updateByPrimaryKeySelective(Shipping record);
 
     int updateByPrimaryKey(Shipping record);
+
+    Integer deleteByUidAndId(Map<String,Integer> map);
+
+    Integer update(Shipping shipping);
+
+    List<Shipping> selectByUid(Integer uid);
 }
