@@ -23,4 +23,6 @@ public interface ShippingMapper {
     Integer update(Shipping shipping);
 
     List<Shipping> selectByUid(Integer uid);
+
+    Shipping selectByUidAndShippingId(Integer uid,Integer shippingId);
 }

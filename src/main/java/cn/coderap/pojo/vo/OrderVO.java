@@ -1,37 +1,29 @@
-package cn.coderap.pojo;
+package cn.coderap.pojo.vo;
 
+import cn.coderap.pojo.Shipping;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+/**
+ * Created by yw
+ * 2021/5/10
+ */
 @Data
-public class Order {
-    private Integer id;
-
+public class OrderVO {
     private Long orderNo;
-
-    private Integer userId;
-
-    private Integer shippingId; //这里设计的不好，最好能添加当时的收货人，收货地址等字段
-
     private BigDecimal payment;
-
     private Integer paymentType;
-
     private Integer postage;
-
     private Integer status;
-
     private Date paymentTime;
-
     private Date sendTime;
-
     private Date endTime;
-
     private Date closeTime;
-
     private Date createTime;
-
-    private Date updateTime;
+    private List<OrderItemVO> orderItemVoList;
+    private Integer shippingId;
+    private Shipping shippingVO;
 }

@@ -23,7 +23,9 @@ public enum ResponseEnum {
     PRODUCT_NOT_EXIST(13,"商品不存在"),
     PRODUCT_STOCK_ERROR(14,"库存不足"),
     CART_PRODUCT_NOT_EXIST(15,"购物车中无此商品"),
-    DELETE_SHIPPING_FAIL(16,"删除收货地址失败");
+    DELETE_SHIPPING_FAIL(16,"删除收货地址失败"),
+    SHIPPING_NOT_EXIST(17,"收货地址不存在"),
+    CART_SELECTED_IS_EMPTY(18,"请选择商品后下单");
 
     private Integer code;
     private String desc;

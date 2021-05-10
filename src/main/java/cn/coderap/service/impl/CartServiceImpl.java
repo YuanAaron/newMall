@@ -187,7 +187,7 @@ public class CartServiceImpl implements ICartService {
         return ResponseVO.success(sum);
     }
 
-    private List<CartRedisVO> listForCartRedisVO(Integer uid) {
+    public List<CartRedisVO> listForCartRedisVO(Integer uid) {
         HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
         String key = String.format(CART_REDIS_KEY_TEMPLATE,uid);
         Map<String, String> map = opsForHash.entries(key);

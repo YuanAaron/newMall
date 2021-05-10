@@ -25,4 +25,6 @@ public interface ProductMapper {
     List<Product> selectByCategoryIdSet(@Param("categoryIdSet") Set<Integer> categoryIdSet); //这里的@Param不能少
 
     List<Product> selectByCartList(@Param("cartList") List<CartRedisVO> cartList);
+
+    List<Product> selectByProductIdSet(@Param("productIdSet") Set<Integer> productIdSet);
 }
