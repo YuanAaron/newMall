@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -226,5 +227,23 @@ public class OrderServiceImpl implements IOrderService {
             return ResponseVO.error(ResponseEnum.ERROR);
         }
         return ResponseVO.success();
+    }
+
+    @Override
+    public void paid(Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            throw new RuntimeException(ResponseEnum.ORDER_NOT_EXIST.getDesc() + "订单id:" + orderNo);
+        }
+        //只有[未付款]的订单可以变成[已付款]（看自己公司业务）
+        if (!order.getStatus().equals(OrderStatusEnum.NO_PAY.getCode())) {
+            throw new RuntimeException(ResponseEnum.ORDER_STATUS_ERROR.getDesc() + "订单id:" + orderNo);
+        }
+        order.setStatus(OrderStatusEnum.PAID.getCode());
+        order.setPaymentTime(new Date());
+        int row = orderMapper.updateByPrimaryKeySelective(order);
+        if (row <= 0) {
+            throw new RuntimeException("将订单更新为已支付状态失败，订单id:" + orderNo);
+        }
     }
 }

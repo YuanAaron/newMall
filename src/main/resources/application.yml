@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8080
   servlet:
     session:
       #默认30分钟
@@ -15,6 +15,11 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: kexin_redis
+  rabbitmq:
+    addresses: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 
 # 在数据库字段映射成pojo方面，BaseResultMap比map-underscore-to-camel-case的功能更强大
 mybatis:

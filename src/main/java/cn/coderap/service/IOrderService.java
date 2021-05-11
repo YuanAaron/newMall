@@ -14,4 +14,5 @@ public interface IOrderService {
     ResponseVO<PageInfo> list(Integer uid,Integer pageNum,Integer pageSize);
     ResponseVO<OrderVO> detail(Integer uid,Long orderNo);
     ResponseVO cancel(Integer uid,Long orderNo);
+    void paid(Long orderNo);
 }
