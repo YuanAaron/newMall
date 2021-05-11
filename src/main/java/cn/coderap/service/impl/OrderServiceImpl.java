@@ -18,6 +18,8 @@ import cn.coderap.pojo.vo.OrderVO;
 import cn.coderap.pojo.vo.ResponseVO;
 import cn.coderap.service.ICartService;
 import cn.coderap.service.IOrderService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,8 +126,11 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toList());
         orderVO.setOrderItemVoList(orderItemVoList);
 
-        orderVO.setShippingId(shipping.getId());
-        orderVO.setShippingVO(shipping);
+        //order表中存放的是shippingId，而非当时的收货地址信息快照，而收货地址本身有删除方法，因此当时的收货地址可能被删掉
+        if (shipping != null) {
+            orderVO.setShippingId(shipping.getId());
+            orderVO.setShippingVO(shipping);
+        }
         return orderVO;
     }
 
@@ -162,5 +167,64 @@ public class OrderServiceImpl implements IOrderService {
         item.setQuantity(quantity);
         item.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
         return item;
+    }
+
+    @Override
+    public ResponseVO<PageInfo> list(Integer uid, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Order> orderList = orderMapper.selectByUid(uid);
+
+        Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoSet(orderNoSet);
+        //一对多的写法：一个orderNo对应多个OrderItem
+        Map<Long, List<OrderItem>> orderItemMap = orderItemList.stream().collect(Collectors.groupingBy(OrderItem::getOrderNo));
+
+        Set<Integer> shippingIdSet = orderList.stream().map(Order::getShippingId).collect(Collectors.toSet());
+        List<Shipping> shippingList = shippingMapper.selectByIdSet(shippingIdSet);
+        //一对一的写法：一个收货地址id对应一个收货地址
+        Map<Integer, Shipping> shippingMap = shippingList.stream().collect(Collectors.toMap(Shipping::getId, e->e));
+
+        List<OrderVO> orderVoList = new ArrayList<>();
+        for (Order order : orderList) {
+            OrderVO orderVO = buildOrderVO(order, orderItemMap.get(order.getOrderNo()), shippingMap.get(order.getShippingId()));
+            orderVoList.add(orderVO);
+        }
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVoList);
+        return ResponseVO.success(pageInfo);
+    }
+
+    @Override
+    public ResponseVO<OrderVO> detail(Integer uid, Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null || !order.getUserId().equals(uid)) {
+            return ResponseVO.error(ResponseEnum.ORDER_NOT_EXIST);
+        }
+        HashSet<Long> orderNoSet = new HashSet<>();
+        orderNoSet.add(order.getOrderNo());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoSet(orderNoSet);
+        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
+        OrderVO orderVO = buildOrderVO(order, orderItemList, shipping);
+        return ResponseVO.success(orderVO);
+    }
+
+    @Override
+    public ResponseVO cancel(Integer uid, Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null || !order.getUserId().equals(uid)) {
+            return ResponseVO.error(ResponseEnum.ORDER_NOT_EXIST);
+        }
+        //只有[未付款]的订单可以取消（看自己公司的业务）
+        if (!order.getStatus().equals(OrderStatusEnum.NO_PAY.getCode())) {
+            return ResponseVO.error(ResponseEnum.ORDER_STATUS_ERROR);
+        }
+        //TODO 这里只修改了订单状态，库存也应该改回去？
+        order.setStatus(OrderStatusEnum.CANCEL.getCode());
+        order.setCloseTime(new Date());
+        int row = orderMapper.updateByPrimaryKeySelective(order);
+        if (row <= 0) {
+            return ResponseVO.error(ResponseEnum.ERROR);
+        }
+        return ResponseVO.success();
     }
 }

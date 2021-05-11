@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum OrderStatusEnum {
-    CANCLE(0,"已取消"),
+    CANCEL(0,"已取消"),
     NO_PAY(10,"未付款"),
     PAID(20,"已付款"),
     SHIPPED(40,"已发货"),
