@@ -20,7 +20,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userLoginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/register","/user/login","/categories","/products/*",
-                        "/shippings/*","/orders/*"); //在完成表单的统一验证处理后”/error“可以删除
+                .excludePathPatterns("/user/register","/user/login","/categories","/products","/products/*"); //在完成表单的统一验证处理后”/error“可以删除
     }
 }
