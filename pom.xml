@@ -83,6 +83,8 @@
                 </dependencies>
             </plugin>
         </plugins>
+
+        <finalName>newMall</finalName>
     </build>
 
 </project>
